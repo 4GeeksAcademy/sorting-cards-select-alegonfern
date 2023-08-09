@@ -17,6 +17,12 @@
   <body>
     <div class="container-fluid text-center">
       <div class="card"></div>
+      <input id="qtyOfCards" type="number" placeholder="Cantidad de cartas" />
+      <button id="btnGenerate" onclick="generateCards()">Generar Cartas</button>
+      <button id="btnSort" onclick="sortCards()">Ordenar</button>
+      <div id="cardDeck"></div>
+      <div id="sortDeck"></div>
     </div>
+    <script src="/src/app.js"></script>
   </body>
 </html>
