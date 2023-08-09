@@ -54,6 +54,7 @@ function createCards(elem) {
 }
 
 /* inversor de valores de cartas A, J, Q, K */
+
 function changeValue(valor) {
   switch (valor) {
     case 1:
@@ -68,7 +69,6 @@ function changeValue(valor) {
       return valor;
   }
 }
-
 /* DRAW button estructura*/
 
 btnDraw.addEventListener("click", e => {
