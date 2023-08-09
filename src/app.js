@@ -1,89 +1,115 @@
-import "./style.css";
+let btnDraw = document.querySelector("#btnDraw");
+let btnSort = document.querySelector("#btnSort");
 
-window.onload = () => {
-  document.querySelector(".card").classList.add(pintaGenerator());
-  document.querySelector(".card").innerHTML = numberGenerator();
-};
+let numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+let pintas = ["♦", "♥", "♠", "♣"];
+let orderCards = [];
 
-let numberGenerator = () => {
-  var numeros = [
-    "A",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "J",
-    "Q",
-    "K"
-  ];
-  var index = Math.floor(Math.random() * numeros.length);
-  return numeros[index];
-};
-
-let pintaGenerator = () => {
-  var pinta = ["diamond", "spade", "heart", "club"];
-  var index2 = Math.floor(Math.random() * pinta.length);
-  return pinta[index2];
-};
-
-let cards = [];
-
-function generateCards() {
-  let input = document.getElementById("qtyOfCards");
-  let amountOfCards = parseInt(input.value);
-  cards = [];
-
-  let cardDeck = document.getElementById("cardDeck");
-  cardDeck.innerHTML = "";
+function createCards(elem) {
+  let input = document.getElementById("amountOfCards");
+  let amountOfCards = parseInt(input.value); //valido entero para cantidad de cartas a generar
+  orderCards = [];
 
   for (let i = 0; i < amountOfCards; i++) {
-    let card = {
-      number: numberGenerator(),
-      pinta: pintaGenerator()
-    };
-    cards.push(card);
+    let randomNumber = Math.floor(Math.random() * numeros.length);
+    let randomSuit = Math.floor(Math.random() * pintas.length);
 
-    let cardDiv = document.createElement("div");
-    cardDiv.classList.add("generated-card");
-    cardDiv.innerHTML = `<span>${card.number}</span>${card.pinta}`;
-    cardDeck.appendChild(cardDiv);
+    let card = document.createElement("div");
+    card.classList.add("card");
+
+    let topSuit = document.createElement("div");
+    topSuit.classList.add("topSuit");
+    topSuit.innerHTML = pintas[randomSuit];
+
+    let middleNumber = document.createElement("div");
+    middleNumber.classList.add("middleNumber");
+    middleNumber.innerHTML = numeros[randomNumber];
+
+    let bottonSuit = document.createElement("div");
+    bottonSuit.classList.add("bottonSuit");
+
+    if (topSuit.innerHTML === "♥" || topSuit.innerHTML === "♦") {
+      topSuit.style.color = "red";
+      middleNumber.style.color = "red";
+      bottonSuit.style.color = "red";
+    } else {
+      topSuit.style.color = "black";
+      middleNumber.style.color = "black";
+      bottonSuit.style.color = "black";
+    }
+
+    bottonSuit.innerHTML = topSuit.innerHTML;
+
+    card.appendChild(topSuit);
+    card.appendChild(middleNumber);
+    card.appendChild(bottonSuit);
+    elem.appendChild(card);
+
+    let cardContent = {
+      number: parseInt(changeValue(middleNumber.innerHTML)),
+      html: card.innerHTML
+    };
+    orderCards.push(cardContent);
   }
 }
 
-function sortCards() {
+/* inversor de valores de cartas A, J, Q, K */
+function changeValue(valor) {
+  switch (valor) {
+    case 1:
+      return "A";
+    case 11:
+      return "J";
+    case 12:
+      return "Q";
+    case 13:
+      return "K";
+    default:
+      return valor;
+  }
+}
+
+/* DRAW button estructura*/
+
+btnDraw.addEventListener("click", e => {
+  const cardDeck = document.querySelector("#cardDeck");
+  cardDeck.innerHTML = "";
+  createCards(cardDeck);
+  let sortDeck = document.getElementById("sortDeck");
+  sortDeck.innerHTML = "";
+});
+
+btnSort.addEventListener("click", e => {
   let sortDeck = document.getElementById("sortDeck");
   sortDeck.innerHTML = "";
 
-  let sortedCards = [...cards]; // Clonamos el array original para no afectarlo
-  selectionSort(sortedCards);
-
-  for (let i = 0; i < sortedCards.length; i++) {
-    let cardDiv = document.createElement("div");
-    cardDiv.classList.add("sorted-card");
-    cardDiv.innerHTML = `<span>${sortedCards[i].number}</span>${sortedCards[i].pinta}`;
-    sortDeck.appendChild(cardDiv);
-  }
-}
-
-function selectionSort(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
+  let currentOrder = [...orderCards];
+  for (let i = 0; i < currentOrder.length - 1; i++) {
     let minIndex = i;
 
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j].number < arr[minIndex].number) {
+    for (let j = i + 1; j < currentOrder.length; j++) {
+      if (currentOrder[j].number < currentOrder[minIndex].number) {
         minIndex = j;
       }
     }
 
     if (minIndex !== i) {
-      let temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
+      let temp = currentOrder[i];
+      currentOrder[i] = currentOrder[minIndex];
+      currentOrder[minIndex] = temp;
+    }
+
+    let currentStep = document.createElement("div");
+    currentStep.classList.add("lines");
+    currentStep.innerHTML = `log ${i + 1}:`;
+    sortDeck.appendChild(currentStep);
+
+    for (let h = 0; h < currentOrder.length; h++) {
+      let newCard = document.createElement("div");
+      newCard.classList.add("newCard");
+
+      newCard.innerHTML = currentOrder[h].html;
+      currentStep.appendChild(newCard);
     }
   }
-}
+});
