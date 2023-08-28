@@ -23,7 +23,8 @@ function createCards(elem) {
 
     let middleNumber = document.createElement("div");
     middleNumber.classList.add("middleNumber");
-    middleNumber.innerHTML = numeros[randomNumber];
+    let num = numeros[randomNumber];
+    middleNumber.innerHTML = changeValue(num);
 
     let bottonSuit = document.createElement("div");
     bottonSuit.classList.add("bottonSuit");
@@ -46,14 +47,12 @@ function createCards(elem) {
     elem.appendChild(card);
 
     let cardContent = {
-      number: parseInt(changeValue(middleNumber.innerHTML)),
+      number: num,
       html: card.innerHTML
     };
     orderCards.push(cardContent);
   }
 }
-
-/* inversor de valores de cartas A, J, Q, K */
 
 function changeValue(valor) {
   switch (valor) {
@@ -66,10 +65,9 @@ function changeValue(valor) {
     case 13:
       return "K";
     default:
-      return valor;
+      return valor.toString();
   }
 }
-/* DRAW button estructura*/
 
 btnDraw.addEventListener("click", e => {
   const cardDeck = document.querySelector("#cardDeck");
